@@ -6,7 +6,6 @@ class RabinCarp:
         self.text_len = len(text)
         self.p = 562448657
         self.base = 10
-        pass
 
     def has_pattern(self, pattern):
         """ returns if there is at least one match of a pattern in the text """
