@@ -36,7 +36,7 @@ class BoyeerMooreHorspool:
 
                 i -= 1
 
-            skip = skip + self._bad_char_shift(self.text[skip + i], bad_char_table)
+            skip = skip + self._bad_char_shift(self.text[skip + pat_len - 1], bad_char_table)
 
         return -1
 
@@ -59,7 +59,7 @@ class BoyeerMooreHorspool:
 
                 i -= 1
 
-            skip = skip + self._bad_char_shift(self.text[skip + i], bad_char_table)
+            skip = skip + self._bad_char_shift(self.text[skip + pat_len - 1], bad_char_table)
 
         return indexes
 
