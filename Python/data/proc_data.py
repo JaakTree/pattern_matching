@@ -54,6 +54,6 @@ def write_random_data(start=5, end=30, step=5, number=20):
 if __name__ == "__main__":
     pass
     #proc_data("Homo_sapiens.GRCh37.68.dna.chromosome.1.fa", "processed.txt")
-    #data = read_data("processed.txt")
+    #data = _read_data("processed.txt")
     #write_pieces(data)
     #write_random_data()
