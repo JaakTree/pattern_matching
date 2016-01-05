@@ -1,24 +1,32 @@
-#pragma once
+#ifndef RABINKARP_H
+#define RABINKARP_H
+
 #include <string>
 #include <vector>
-#define ll signed long long
-
+#include <set>
+#include <iostream>
 
 class RabinKarp
 {
-	std::string &genome;
-	std::vector<ll> powers;
-	const ll prime = 1000000009;
+	std::string genome;
+	std::vector<int> powers;
 
-	ll makeHash(const std::string &substring ) { 
-		ll hash = 0;
-		this->powers.clear();
-		this->powers.resize(substring.length());
+	const int default_power_length = 1001;
+	const int prime = 1000000009;
+
+
+	void makePowers()
+	{
+		this->powers.resize(default_power_length);
 		this->powers[0] = 1;
-		for (ll i = 1; i < substring.length(); ++i)
-			this->powers[i] = 2 * this->powers[i - 1];
+		for (int i = 1; i < default_power_length; ++i)
+			this->powers[i] = (2 * this->powers[i - 1]) % this->prime;
+	};
 
-		for (ll i = substring.length() - 1; i > -1; --i)
+	// redo with iterators.
+	int makeHash(const std::string &substring) { 
+		long long hash = 0;
+		for (int i = substring.length() - 1; i > -1; --i)
 		{
 			hash += (substring[i] * this->powers[substring.length() - i - 1]) % this->prime;
 			hash %= this->prime;
@@ -26,9 +34,11 @@ class RabinKarp
 		return hash % this->prime;
 	};
 
-	ll remakeHash(ll currentHash, const char &previousSymbol, const char &nextSymbol)
+
+	int remakeHash(int currentHash, const char &previousSymbol, const char &nextSymbol, const std::string &pattern)
 	{
-		currentHash -= ( (previousSymbol*this->powers[this->powers.size() - 1]) - this->prime );
+		
+		currentHash -= ( (previousSymbol*this->powers[pattern.length() - 1]) - this->prime );
 		currentHash %= this->prime;
 		currentHash *= 2;
 		currentHash %= this->prime;
@@ -38,25 +48,26 @@ class RabinKarp
 	};
 	
 	public:
-		bool hasPattern(std::string &pattern ) { 
+		bool hasPattern(const std::string &pattern) { 
 			if (RabinKarp::firstOccurence(pattern) > -1)
 				return true;
 			return false;
 		};
 		
-		ll firstOccurence(std::string &pattern) {
+		int firstOccurence(const std::string &pattern) {
 			if (pattern.length() <= genome.length())
 			{
-				ll hashForGenome = makeHash( genome.substr(0, pattern.length()) );
-				ll hashForPattern = makeHash( pattern );
-				ll index = genome.length() - pattern.length() + 1;
-				if (hashForPattern == hashForGenome && genome.substr(0, pattern.length()) == pattern)
+				std::string substring = genome.substr(0, pattern.length());
+				int hashForGenome = makeHash( substring );
+				int hashForPattern = makeHash( pattern );
+				int index = genome.length() - pattern.length() + 1;
+				if (hashForPattern == hashForGenome && genome.compare(0, pattern.length(), pattern) == 0)
 					return 0;
 
-				for (ll i = 1; i < index; ++i)
+				for (int i = 1; i < index; ++i)
 				{
-					hashForGenome = remakeHash(hashForGenome, this->genome[i - 1], this->genome[pattern.length() + i - 1]);
-					if (hashForPattern == hashForGenome && genome.substr(i, pattern.length()) == pattern)
+					hashForGenome = remakeHash(hashForGenome, this->genome[i - 1], this->genome[pattern.length() + i - 1], pattern);
+					if (hashForPattern == hashForGenome && genome.compare(i, pattern.length(), pattern) == 0)
 						return i;
 				}
 				return -1;
@@ -64,28 +75,34 @@ class RabinKarp
 			return -1;
 		};
 		
-		std::vector<ll> allMatches(std::string &pattern) { 
-			std::vector<ll> v;  
+		std::set<int> allMatches(const std::string &pattern) { 
+			std::set<int> v;  
 			if (pattern.length() <= genome.length())
 			{
-				ll hashForGenome = makeHash(genome.substr(0, pattern.length()));
-				ll hashForPattern = makeHash(pattern);
-				ll index = genome.length() - pattern.length() + 1;
-				if (hashForPattern == hashForGenome && genome.substr(0, pattern.length()) == pattern)
-					v.push_back(0);
+				std::string substring = genome.substr(0, pattern.length());
+				int hashForGenome = makeHash(substring);
+				int hashForPattern = makeHash(pattern);
+				int index = genome.length() - pattern.length() + 1;
+				if (hashForPattern == hashForGenome && genome.compare(0, pattern.length(), pattern) == 0)
+					v.insert(0);
 
-				for (ll i = 1; i < index; ++i)
+				for (int i = 1; i < index; ++i)
 				{
-					hashForGenome = remakeHash(hashForGenome, this->genome[i - 1], this->genome[pattern.length() + i - 1]);
-					if (hashForPattern == hashForGenome && genome.substr(i, pattern.length()) == pattern)
-						v.push_back(i);
+					hashForGenome = remakeHash(hashForGenome, this->genome[i - 1], this->genome[pattern.length() + i - 1], pattern);
+					if (hashForPattern == hashForGenome && genome.compare(i, pattern.length(), pattern) == 0)
+						v.insert(i);
 				}
 			}
 			if( v.empty() )
-				v.push_back(-1);
+				v.insert(-1);
 			return v; 
 		};
 
-		RabinKarp(std::string &genome) :genome(genome){};
-		~RabinKarp() {};
+		RabinKarp::RabinKarp(const std::string &genome) :genome(genome){
+			makePowers();
+		};
+		RabinKarp::~RabinKarp() {};
 };
+
+
+#endif RABINKARP_H
