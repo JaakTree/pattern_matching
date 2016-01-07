@@ -1,19 +1,20 @@
-#pragma once
+#ifndef KNUTHMORRISPRATT_H
+#define KNUTHMORRISPRATT_H
+
 #include <string>
 #include <vector>
-#define ll signed long long
 
 
 class KnuthMorrisPratt
 {
 	std::string &genome;
-	std::vector<ll> prefixFunction(const std::string &pattern) {
-		ll patternLength = pattern.length();
-		std::vector<ll> P(patternLength + 1, -1);
+	std::vector<int> prefixFunction(const std::string &pattern) {
+		int patternLength = pattern.length();
+		std::vector<int> P(patternLength + 1, -1);
 
-		for (ll i = 1; i < patternLength + 1; ++i)
+		for (int i = 1; i < patternLength + 1; ++i)
 		{
-			ll j = P[i - 1];
+			int j = P[i - 1];
 			while (j != -1 && pattern[i - 1] != pattern[j])
 				j = P[j];
 			
@@ -29,11 +30,11 @@ class KnuthMorrisPratt
 			return false;
 		};
 
-		ll firstOccurence(std::string &pattern) {
-			std::vector<ll> P = KnuthMorrisPratt::prefixFunction(pattern);
+		int firstOccurence(std::string &pattern) {
+			std::vector<int> P = KnuthMorrisPratt::prefixFunction(pattern);
 		
-			ll patternIndex = 0;
-			for (ll genomeIndex = 0; genomeIndex < genome.length(); ++genomeIndex)
+			int patternIndex = 0;
+			for (int genomeIndex = 0; genomeIndex < genome.length(); ++genomeIndex)
 			{
 				while (patternIndex != -1 && (patternIndex == pattern.size() || pattern[patternIndex] != genome[genomeIndex]))
 					patternIndex = P[patternIndex];
@@ -46,15 +47,15 @@ class KnuthMorrisPratt
 			return -1;
 		};
 
-		std::vector<ll> allMatches(std::string &pattern) {
-			std::vector<ll> v;
+		std::set<int> allMatches(std::string &pattern) {
+			std::set<int> v;
 
 			if (pattern.length() <= genome.length())
 			{
-				std::vector<ll> P = KnuthMorrisPratt::prefixFunction(pattern);
+				std::vector<int> P = KnuthMorrisPratt::prefixFunction(pattern);
 
-				ll patternIndex = 0;
-				for (ll genomeIndex = 0; genomeIndex < genome.length(); ++genomeIndex)
+				int patternIndex = 0;
+				for (int genomeIndex = 0; genomeIndex < genome.length(); ++genomeIndex)
 				{
 					while (patternIndex != -1 && (patternIndex == pattern.size() || pattern[patternIndex] != genome[genomeIndex]))
 						patternIndex = P[patternIndex];
@@ -62,16 +63,19 @@ class KnuthMorrisPratt
 					++patternIndex;
 
 					if (patternIndex == pattern.length())
-						v.push_back(genomeIndex - pattern.length() + 1);
+						v.insert(genomeIndex - pattern.length() + 1);
 				}
 			}
 
 			if (v.empty())
-				v.push_back(-1);
+				v.insert(-1);
 		
 			return v;
 		};
 
-		KnuthMorrisPratt(std::string &genome) :genome(genome) {};
-		~KnuthMorrisPratt() {};
+		KnuthMorrisPratt::KnuthMorrisPratt(std::string &genome) :genome(genome) {};
+		KnuthMorrisPratt::~KnuthMorrisPratt() {};
 };
+
+
+#endif KNUTHMORRISPRATT_H
