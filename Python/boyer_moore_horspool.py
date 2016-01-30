@@ -25,13 +25,11 @@ class BoyeerMooreHorspool:
             raise ValueError("Pattern length is bigger than text")
 
         bad_char_table = self._bad_char_table(pattern)
-        indexes = []
         skip = 0
         while self.text_len - skip >= pat_len:
             i = pat_len - 1
             while self.text[skip + i] == pattern[i]:
                 if i == 0:
-                    indexes.append(skip + i)
                     return skip + i
 
                 i -= 1

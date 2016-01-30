@@ -11,28 +11,23 @@ class Plot:
 
     def plot_naive(self):
         x, res_one, res_two = self._read_data("naive.txt")
-        self._plot_pair(x, res_one, res_two, self.res_dir + "img/naive.png")
-        self._plot_average(x, res_one, res_two, self.res_dir + "img/naive_av.png")
+        self._plot_pair(x, res_one, res_two, self.res_dir + "img/naive.png", "Naive method")
 
     def plot_rk(self):
         x, res_one, res_two = self._read_data("rk.txt")
-        self._plot_pair(x, res_one, res_two, self.res_dir + "img/rk.png")
-        self._plot_average(x, res_one, res_two, self.res_dir + "img/rk_av.png")
+        self._plot_pair(x, res_one, res_two, self.res_dir + "img/rk.png", "Rabin-Karp")
 
     def plot_kmp(self):
         x, res_one, res_two = self._read_data("kmp.txt")
-        self._plot_pair(x, res_one, res_two, self.res_dir + 'img/kmp.png')
-        self._plot_average(x, res_one, res_two, self.res_dir + 'img/kmp_av.png')
+        self._plot_pair(x, res_one, res_two, self.res_dir + 'img/kmp.png', "Knuth-Morris-Pratt")
 
     def plot_bmh(self):
         x, res_one, res_two = self._read_data("bmh.txt")
-        self._plot_pair(x, res_one, res_two, self.res_dir + 'img/bmh.png')
-        self._plot_average(x, res_one, res_two, self.res_dir + 'img/bmh_av.png')
+        self._plot_pair(x, res_one, res_two, self.res_dir + 'img/bmh.png', "Boyer-Moore-Horspool")
 
     def plot_bm(self):
         x, res_one, res_two = self._read_data("bm.txt")
-        self._plot_pair(x, res_one, res_two, self.res_dir + "img/bm.png")
-        self._plot_average(x, res_one, res_two, self.res_dir + "img/bm_av.png")
+        self._plot_pair(x, res_one, res_two, self.res_dir + "img/bm.png", "Boyer-Moore")
 
     def plot_all(self):
         self.plot_naive()
@@ -41,17 +36,18 @@ class Plot:
         self.plot_bmh()
         self.plot_bm()
 
-    def _plot_pair(self, x, y1, y2, save_to, x_name="Pattern length", y_name="Time, sec"):
+    def _plot_pair(self, x, y1, y2, save_to, title, x_name="Pattern length", y_name="Time, sec"):
         x_range = self.end
         y_range = 1.25 * max(max(y1), max(y2))
-        plt.plot(x, y1, 'r-', label="For existing pieces")
-        plt.plot(x, y2, 'g-', label="For random pieces")
+        plt.plot(x, y1, 'r-', label="Python version")
+        plt.plot(x, y2, 'g-', label="C++ version")
         plt.axis([self.step, x_range, 0, y_range])
         if x_name:
             plt.xlabel(x_name)
         if y_name:
             plt.ylabel(y_name)
 
+        plt.title(title)
         plt.legend()
         plt.savefig(save_to)
         plt.show()
@@ -83,8 +79,7 @@ class Plot:
         return x, res_exist, res_rnd
 
 if __name__ == "__main__":
-    pl = Plot("results/")
+    pl = Plot("results/newest/5-30/")
     pl.plot_all()
-
 
 

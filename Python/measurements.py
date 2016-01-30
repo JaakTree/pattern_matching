@@ -19,29 +19,29 @@ class Measurements:
         self.bm = BoyerMoore(text)
         self.data_dir = in_dir
         self.res_dir = out_dir
-        self.start = 5
-        self.end = 30
-        self.step = 5
+        self.start = 50
+        self.end = 300
+        self.step = 50
 
     def naive_measurements(self):
-        res_one, res_two = self._measure(self.naive)
-        self._write_res_to("naive.txt", res_one, res_two)
+        results = self._measure(self.naive)
+        self._write_res_to("naive.txt", results)
 
     def rk_measurements(self):
-        res_one, res_two = self._measure(self.rk)
-        self._write_res_to("rk.txt", res_one, res_two)
+        results = self._measure(self.rk)
+        self._write_res_to("rk.txt", results)
 
     def kmp_measurements(self):
-        res_one, res_two = self._measure(self.kmp)
-        self._write_res_to("kmp.txt", res_one, res_two)
+        results = self._measure(self.kmp)
+        self._write_res_to("kmp.txt", results)
 
     def bmh_measurements(self):
-        res_one, res_two = self._measure(self.bmh)
-        self._write_res_to("bmh.txt", res_one, res_two)
+        results = self._measure(self.bmh)
+        self._write_res_to("bmh.txt", results)
 
     def bm_measurements(self):
-        res_one, res_two = self._measure(self.bm)
-        self._write_res_to("bm.txt", res_one, res_two)
+        results = self._measure(self.bm)
+        self._write_res_to("bm.txt", results)
 
     def run_all(self):
         print "Naive algorithm measurements:"
@@ -56,30 +56,20 @@ class Measurements:
         self.bm_measurements()
 
     def _measure(self, obj):
-        results_one = []
-        results_two = []
+        results = []
         for size in xrange(self.start, self.end+1, self.step):
             print "size: %d" % (size)
             paterns = self._read_patterns(size)
-            interm_res_one = []
-            interm_res_two = []
-            middle_ind = len(paterns)/2
-            for i in xrange(0, middle_ind):
+            interm_res = []
+            for i in xrange(0, len(paterns)):
                 start = time()
                 obj.all_matches(paterns[i])
                 end = time()
-                interm_res_one.append(end-start)
+                interm_res.append(end-start)
 
-            for i in xrange(middle_ind, len(paterns)):
-                start = time()
-                obj.all_matches(paterns[i])
-                end = time()
-                interm_res_two.append(end-start)
+            results.append(1.0*sum(interm_res)/len(interm_res))
 
-            results_one.append(1.0*sum(interm_res_one)/len(interm_res_one))
-            results_two.append(1.0*sum(interm_res_two)/len(interm_res_two))
-
-        return results_one, results_two
+        return results
 
     def _read_patterns(self, size):
         file_name = self.data_dir + str(size) + ".txt"
@@ -88,11 +78,10 @@ class Measurements:
 
         return patterns
 
-    def _write_res_to(self, out_file, res_one, res_two):
+    def _write_res_to(self, out_file, results):
         with open(self.res_dir + "/" + out_file, 'w+') as file:
             file.write(" ".join(str(size) for size in xrange(self.start, self.end+1, self.step)) + "\n")
-            file.write(" ".join(str(res) for res in res_one) + "\n")
-            file.write(" ".join(str(res) for res in res_two) + "\n")
+            file.write(" ".join(str(res) for res in results) + "\n")
 
 def read_data(file_name):
     """ read all data from file """
@@ -103,8 +92,9 @@ def read_data(file_name):
 
 def main():
     genome = read_data("data/processed.txt")
-    measurements = Measurements(genome[:100000000], "data/", "results/")
-    measurements.run_all()
+    measurements = Measurements(genome, "data/", "results/")
+    #measurements.run_all()
+    measurements.rk_measurements()
 
 if __name__ == "__main__":
     cProfile.run('main()')

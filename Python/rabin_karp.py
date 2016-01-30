@@ -52,6 +52,7 @@ class RabinKarp:
         pattern_hash = self._hash_fun(pattern, codes)
         substr_hash = self._hash_fun(self.text[:pat_len], codes)
         indexes = []
+        k = 0
         for i in xrange(self.text_len - pat_len):
             if pattern_hash == substr_hash:
                 if pattern == self.text[i:i + pat_len]:
@@ -70,7 +71,7 @@ class RabinKarp:
         return indexes
 
     def _rolling_hash(self, old_first, new_last, prev_value, str_len, codes):
-        return ((prev_value - codes[old_first]) >> 1) + (codes[new_last] << (str_len-1))
+        return ((prev_value - codes[old_first]) >> 2) + (codes[new_last] << 2*(str_len-1))
 
     def _preproc(self):
         alphabet = "ACGT"
@@ -83,6 +84,6 @@ class RabinKarp:
     def _hash_fun(self, string, codes):
         hash = 0
         for i in xrange(len(string)):
-            hash += codes[string[i]] << i
+            hash += codes[string[i]] << 2*i
 
         return hash
