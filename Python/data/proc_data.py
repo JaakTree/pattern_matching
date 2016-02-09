@@ -4,7 +4,7 @@ def proc_data(in_file, out_file):
     """ read chromosome genome and write genome without additional info to file """
     with open(in_file, 'r') as file:
         data = file.readlines()
-        for i in xrange(1, len(data)):
+        for i in range(1, len(data)):
             data[i] = data[i].rstrip().replace("N", "")
 
     with open(out_file, "w") as file:
@@ -27,7 +27,7 @@ def cut_pieces(data, size, number=20):
     """ cut fix sized pieces from genome """
     pieces = []
     data_len = len(data)
-    for _ in xrange(number):
+    for _ in range(number):
         index = randint(0, data_len-size-1)
         pieces.append(data[index:index+size])
 
@@ -35,7 +35,7 @@ def cut_pieces(data, size, number=20):
 
 def write_pieces(data, start=5, end=30, step=5):
     """ write cutted pieces of genome to according files """
-    for size in xrange(start, end+1, step):
+    for size in range(start, end+1, step):
         pieces = cut_pieces(data, size)
         write_lines_to(str(size) + ".txt", pieces)
 
@@ -43,10 +43,10 @@ def write_random_data(start=5, end=30, step=5, number=20):
     """ generate random genome pieces of particular sizes. Append them to
      according files """
     alphabet = "ACGT"
-    for size in xrange(start, end+1, step):
+    for size in range(start, end+1, step):
         raws = []
-        for __ in xrange(number):
-            raw = ''.join(choice(alphabet) for _ in xrange(size))
+        for __ in range(number):
+            raw = ''.join(choice(alphabet) for _ in range(size))
             raws.append(raw)
 
         write_lines_to(str(size) + ".txt", raws, "a")

@@ -44,24 +44,24 @@ class Measurements:
         self._write_res_to("bm.txt", results)
 
     def run_all(self):
-        print "Naive algorithm measurements:"
+        print("Naive algorithm measurements:")
         self.naive_measurements()
-        print "Rabin-Karp algorithm measurements:"
+        print("Rabin-Karp algorithm measurements:")
         self.rk_measurements()
-        print "Knuth-Morris-Pratt algorithm measurements:"
+        print("Knuth-Morris-Pratt algorithm measurements:")
         self.kmp_measurements()
-        print "Boyer-Moore-Horspool algorithm measurements:"
+        print("Boyer-Moore-Horspool algorithm measurements:")
         self.bmh_measurements()
-        print "Boyer-Moore algorithm measurements:"
+        print("Boyer-Moore algorithm measurements:")
         self.bm_measurements()
 
     def _measure(self, obj):
         results = []
-        for size in xrange(self.start, self.end+1, self.step):
-            print "size: %d" % (size)
+        for size in range(self.start, self.end+1, self.step):
+            print("size: %d" % (size))
             paterns = self._read_patterns(size)
             interm_res = []
-            for i in xrange(0, len(paterns)):
+            for i in range(0, len(paterns)):
                 start = time()
                 obj.all_matches(paterns[i])
                 end = time()
@@ -80,7 +80,7 @@ class Measurements:
 
     def _write_res_to(self, out_file, results):
         with open(self.res_dir + "/" + out_file, 'w+') as file:
-            file.write(" ".join(str(size) for size in xrange(self.start, self.end+1, self.step)) + "\n")
+            file.write(" ".join(str(size) for size in range(self.start, self.end+1, self.step)) + "\n")
             file.write(" ".join(str(res) for res in results) + "\n")
 
 def read_data(file_name):
@@ -93,7 +93,7 @@ def read_data(file_name):
 def main():
     genome = read_data("data/processed.txt")
     measurements = Measurements(genome, "data/", "results/")
-    #measurements.run_all()
+    measurements.run_all()
     measurements.rk_measurements()
 
 if __name__ == "__main__":

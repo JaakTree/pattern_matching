@@ -99,7 +99,7 @@ class BoyerMoore:
     def _bad_char_table(self, pattern):
         shifts = dict()
         pat_len = len(pattern)
-        for i in xrange(1, pat_len):
+        for i in range(1, pat_len):
             if pattern[pat_len-i-1] not in shifts:
                 shifts[pattern[pat_len-i-1]] = i - 1
 
@@ -183,7 +183,7 @@ class BoyerMoore:
         preproc_array = self._preprocessing(pattern)
         longest = 0
         prep_ar_len = len(preproc_array)
-        for i in xrange(0, prep_ar_len):
+        for i in range(0, prep_ar_len):
             if preproc_array[prep_ar_len-i-1] == i+1:
                 longest = max(preproc_array[prep_ar_len-i-1], longest)
             H[-i-1] = longest

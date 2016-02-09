@@ -25,7 +25,7 @@ class RabinKarp:
 
         pattern_hash = self._hash_fun(pattern)
         substr_hash = self._hash_fun(self.text[:pat_len])
-        for i in xrange(self.text_len - pat_len):
+        for i in range(self.text_len - pat_len):
             if pattern_hash == substr_hash:
                 if pattern == self.text[i:i + pat_len]:
                     return i
@@ -53,7 +53,7 @@ class RabinKarp:
         substr_hash = self._hash_fun(self.text[:pat_len], codes)
         indexes = []
         k = 0
-        for i in xrange(self.text_len - pat_len):
+        for i in range(self.text_len - pat_len):
             if pattern_hash == substr_hash:
                 if pattern == self.text[i:i + pat_len]:
                     indexes.append(i)
@@ -83,7 +83,7 @@ class RabinKarp:
 
     def _hash_fun(self, string, codes):
         hash = 0
-        for i in xrange(len(string)):
+        for i in range(len(string)):
             hash += codes[string[i]] << 2*i
 
         return hash

@@ -64,7 +64,7 @@ class BoyeerMooreHorspool:
     def _bad_char_table(self, pattern):
         shifts = dict()
         pat_len = len(pattern)
-        for i in xrange(1, pat_len):
+        for i in range(1, pat_len):
             if pattern[pat_len-i-1] not in shifts:
                 shifts[pattern[pat_len-i-1]] = i
 

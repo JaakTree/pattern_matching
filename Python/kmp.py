@@ -26,7 +26,7 @@ class KnuthMorrisPratt:
         k = 0
         index = -1
         pi = self._prefix_func(pattern)
-        for i in xrange(self.text_len):
+        for i in range(self.text_len):
             while k > 0 and pattern[k] != self.text[i]:
                 k = pi[k-1]
 
@@ -48,7 +48,7 @@ class KnuthMorrisPratt:
         k = 0
         indexes = []
         pi = self._prefix_func(pattern)
-        for i in xrange(self.text_len):
+        for i in range(self.text_len):
             while k > 0 and pattern[k] != self.text[i]:
                 k = pi[k-1]
 
@@ -67,7 +67,7 @@ class KnuthMorrisPratt:
 
         str_len = len(string)
         pi = [0]*str_len
-        for i in xrange(1, str_len):
+        for i in range(1, str_len):
             k = pi[i-1]
             while k > 0 and string[k] != string[i]:
                 k = pi[k-1]
