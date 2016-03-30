@@ -1,21 +1,21 @@
-import pyopencl as cl
 import numpy
+import pyopencl as cl
 
 
 class KnuthMorrisPrattPOCL:
     """ Implementation of Knuth-Morris-Pratt algorithm using OpenCL """
 
-    def __init__(self, text):
+    def __init__(self, text, pieces_number=1):
         self.text = text
         self.text_len = len(text)
-        self.pieces_num = 1
+        self.pieces_num = pieces_number
 
-    def run(self, pattern):
+    def all_matches(self, pattern):
         # Set up OpenCL
         context = cl.create_some_context(False)  # don't ask user about platform
         queue = cl.CommandQueue(context)
 
-        with open("resources/kmp_pocl.cl", "r") as kernel_file:
+        with open("../Pyopencl/kmp/resources/kmp_pocl.cl", "r") as kernel_file:
             kernel_src = kernel_file.read()
 
         program = cl.Program(context, kernel_src).build()
@@ -61,7 +61,3 @@ class KnuthMorrisPrattPOCL:
                 k += 1
             pi[i] = k
         return pi
-
-
-obj = KnuthMorrisPrattPOCL("AAABBBCCC")
-print(obj.run("BBB"))

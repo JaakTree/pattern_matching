@@ -1,22 +1,22 @@
-import pyopencl as cl
 import numpy
+import pyopencl as cl
 
 
 class BoyeerMooreHorspoolPOCL:
     """ Implementation of Boyeer-Moore-Horspool algorithm using OpenCL """
 
-    def __init__(self, text):
+    def __init__(self, text, pieces_number=1, alphabet_len=256):
         self.text = text
         self.text_len = len(text)
-        self.pieces_num = 1
-        self.alphabet_len = 256
+        self.pieces_num = pieces_number
+        self.alphabet_len = alphabet_len
 
-    def run(self, pattern):
+    def all_matches(self, pattern):
         # Set up OpenCL
         context = cl.create_some_context(False)  # don't ask user about platform
         queue = cl.CommandQueue(context)
 
-        with open("resources/bmh_pocl.cl", "r") as kernel_file:
+        with open("../Pyopencl/bmh/resources/bmh_pocl.cl", "r") as kernel_file:
             kernel_src = kernel_file.read()
 
         program = cl.Program(context, kernel_src).build()
@@ -67,6 +67,3 @@ class BoyeerMooreHorspoolPOCL:
         with open(file_name, 'r') as file:
             string = file.read()
         return string
-
-obj = BoyeerMooreHorspoolPOCL("AAABBBCCC")
-print(obj.run("BBB"))
