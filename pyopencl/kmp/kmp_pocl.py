@@ -10,9 +10,20 @@ class KnuthMorrisPrattPOCL:
         self.text_len = len(text)
         self.pieces_num = pieces_number
 
-    def all_matches(self, pattern):
+    def all_matches(self, pattern, device_type=0):
         # Set up OpenCL
-        context = cl.create_some_context(False)  # don't ask user about platform
+        # 0 - means for GPU
+        # 1 - means for GPU
+        # otherwise - some of the devices
+        if device_type == 0:
+            platform = cl.get_platforms()
+            devices = platform[0].get_devices(cl.device_type.GPU)
+            context = cl.Context(devices)
+        elif device_type == 1:
+            platform = cl.get_platforms()
+            devices = platform[0].get_devices(cl.device_type.CPU)
+            context = cl.Context(devices)
+
         queue = cl.CommandQueue(context)
 
         # ../Pyopencl/kmp/
