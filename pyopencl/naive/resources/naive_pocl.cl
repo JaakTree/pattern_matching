@@ -7,7 +7,7 @@ __kernel void naive_search(
 {
     int i = get_global_id(0);
     if (i+pattern_len <= string_len) {
-        int j = 0;
+        __private int j = 0;
         while(j < pattern_len) {
              if (string[i+j] != pattern[j])
                   break;
