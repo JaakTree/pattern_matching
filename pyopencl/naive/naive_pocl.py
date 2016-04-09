@@ -5,21 +5,22 @@ import pyopencl as cl
 class NaiveSearchPOCL:
     """ Implementation of Naive search algorithm using OpenCL """
 
-    def __init__(self, text, pieces_number=1):
+    def __init__(self, text, pieces_number=1, device_type=0):
         self.text = text
         self.text_len = len(text)
         self.pieces_num = pieces_number
+        self.device_type = device_type
 
-    def all_matches(self, pattern, device_type=0):
+    def all_matches(self, pattern):
         # Set up OpenCL
         # 0 - means for GPU
-        # 1 - means for GPU
+        # 1 - means for CPU
         # otherwise - some of the devices
-        if device_type == 0:
+        if self.device_type == 0:
             platform = cl.get_platforms()
             devices = platform[0].get_devices(cl.device_type.GPU)
             context = cl.Context(devices)
-        elif device_type == 1:
+        elif self.device_type == 1:
             platform = cl.get_platforms()
             devices = platform[0].get_devices(cl.device_type.CPU)
             context = cl.Context(devices)
@@ -56,8 +57,3 @@ class NaiveSearchPOCL:
         # Read back the results from the compute device
         cl.enqueue_copy(queue, matches, d_matches)
         return matches
-
-
-if __name__ == "__main__":
-    obj = NaiveSearchPOCL("AAAABBB")
-    obj.all_matches("A")

@@ -15,7 +15,7 @@ from Pyopencl.bmh.bmh_pocl import BoyeerMooreHorspoolPOCL
 class Measurements:
     """ Implement all needed Measurements and illustrate results """
 
-    def __init__(self, text, in_dir, out_dir, pieces_number=10000, start=25, end=200, step=25):
+    def __init__(self, text, in_dir, out_dir, pieces_number=1000, start=25, end=200, step=25, device_type=0):
         # initialize objects of basic algorithms
         self.naive = NaiveSearch(text)
         self.rk = RabinKarp(text)
@@ -24,9 +24,9 @@ class Measurements:
         self.bm = BoyerMoore(text)
 
         # initialize objects of PyopenCL versions
-        self.naive_pocl = NaiveSearchPOCL(text, pieces_number=pieces_number)
-        self.kmp_pocl = KnuthMorrisPrattPOCL(text, pieces_number=pieces_number)
-        self.bmh_pocl = BoyeerMooreHorspoolPOCL(text, pieces_number=pieces_number)
+        self.naive_pocl = NaiveSearchPOCL(text, pieces_number=pieces_number, device_type=device_type)
+        self.kmp_pocl = KnuthMorrisPrattPOCL(text, pieces_number=pieces_number, device_type=device_type)
+        self.bmh_pocl = BoyeerMooreHorspoolPOCL(text, pieces_number=pieces_number, device_type=device_type)
 
         self.data_dir = in_dir
         self.res_dir = out_dir
@@ -95,13 +95,12 @@ class Measurements:
             print("size: %d" % (size))
             paterns = self._read_patterns(size)
             interm_res = []
-            #for i in range(0, len(paterns)):
-            i = 4
-            start = time()
-            print(sum(obj.all_matches(paterns[i])))
-            #print(len(obj.all_matches(paterns[i])))
-            end = time()
-            interm_res.append(end-start)
+            for i in range(0, len(paterns)):
+                start = time()
+                obj.all_matches(paterns[i])
+                #print(len(obj.all_matches(paterns[i])))
+                end = time()
+                interm_res.append(end-start)
 
             results.append(1.0*sum(interm_res)/len(interm_res))
 
@@ -121,6 +120,7 @@ class Measurements:
             file.write("\t".join(str(size) for size in range(self.start, self.end+1, self.step)) + "\n")
             file.write("\t".join(str(res) for res in results) + "\n")
 
+
 def read_data(file_name):
     """ read all data from file """
     with open(file_name, 'r') as file:
@@ -128,17 +128,17 @@ def read_data(file_name):
 
     return data
 
+
 def main():
     genome = read_data("data/processed.txt")
-    measurements = Measurements(genome, "data/25-200/", "results/25-200", pieces_number=100000, start=25, end=25, step=25)
-    #measurements.run_all_pocl()
-    #measurements.naive_pocl_measurements()
-    measurements.kmp_pocl_measurements()
-    #measurements.kmp_measurements()
-    #measurements.bmh_pocl_measurements()
-    # measurements.run_all_pocl()
-    #measurements2 = Measurements(genome, "data/250-2000/", "results/250-2000", pieces_number=100, start=250, end=2000, step=250)
-    #measurements2.kmp_pocl_measurements()
+    measurements = Measurements(genome, "data/25-200/", "results/25-200",
+                                pieces_number=10000, start=25, end=200, step=25, device_type=1)
+    measurements.run_all_pocl()
+
+    measurements2 = Measurements(genome, "data/250-2000/", "results/250-2000",
+                                pieces_number=4, start=250, end=2000, step=250, device_type=1)
+
+    #measurements2.run_all_pocl()
 
 if __name__ == "__main__":
     #cProfile.run('main()')

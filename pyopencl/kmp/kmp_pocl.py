@@ -5,28 +5,30 @@ import pyopencl as cl
 class KnuthMorrisPrattPOCL:
     """ Implementation of Knuth-Morris-Pratt algorithm using OpenCL """
 
-    def __init__(self, text, pieces_number=1):
+    def __init__(self, text, pieces_number=1, device_type=0):
         self.text = text
         self.text_len = len(text)
         self.pieces_num = pieces_number
+        self.device_type = device_type
 
-    def all_matches(self, pattern, device_type=0):
+    def all_matches(self, pattern):
         # Set up OpenCL
         # 0 - means for GPU
-        # 1 - means for GPU
+        # 1 - means for CPU
         # otherwise - some of the devices
-        if device_type == 0:
+        if self.device_type == 0:
             platform = cl.get_platforms()
             devices = platform[0].get_devices(cl.device_type.GPU)
             context = cl.Context(devices)
-        elif device_type == 1:
+        elif self.device_type == 1:
             platform = cl.get_platforms()
             devices = platform[0].get_devices(cl.device_type.CPU)
             context = cl.Context(devices)
+        else:
+            context = cl.create_some_context(False)  # don't ask user about platform
 
         queue = cl.CommandQueue(context)
 
-        # ../Pyopencl/kmp/
         with open("../Pyopencl/kmp/resources/kmp_pocl.cl", "r") as kernel_file:
             kernel_src = kernel_file.read()
 
@@ -73,6 +75,3 @@ class KnuthMorrisPrattPOCL:
         return pi
 
 
-#obj = KnuthMorrisPrattPOCL("A"*1010, 10)
-#AACCCCGGGTTTT
-#print(obj.all_matches("AAC"))
