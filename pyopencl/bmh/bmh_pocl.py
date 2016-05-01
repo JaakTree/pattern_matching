@@ -16,6 +16,7 @@ class BoyeerMooreHorspoolPOCL:
         # Set up OpenCL
         # 0 - means for GPU
         # 1 - means for CPU
+        # 2 - means for Accelerator
         # otherwise - some of the devices
         if self.device_type == 0:
             platform = cl.get_platforms()
@@ -24,6 +25,10 @@ class BoyeerMooreHorspoolPOCL:
         elif self.device_type == 1:
             platform = cl.get_platforms()
             devices = platform[0].get_devices(cl.device_type.CPU)
+            context = cl.Context(devices)
+        elif self.device_type == 2:
+            platform = cl.get_platforms()
+            devices = platform[0].get_devices(cl.device_type.ACCELERATOR)
             context = cl.Context(devices)
         else:
             context = cl.create_some_context(False)  # don't ask user about platform
@@ -54,7 +59,7 @@ class BoyeerMooreHorspoolPOCL:
         d_matches = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, matches.nbytes)
 
         search = program.bmh_search
-        search.set_scalar_arg_dtypes([None, None, None, int, int, int, None])
+        search.set_scalar_arg_dtypes([None, None, None, numpy.uint32, numpy.uint32, numpy.uint32, None])
         search(queue, (2*self.pieces_num - 1, ), None, d_str, d_pat, d_table,
                self.text_len, len(pattern), self.pieces_num, d_matches)
 

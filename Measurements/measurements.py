@@ -15,7 +15,7 @@ from Pyopencl.bmh.bmh_pocl import BoyeerMooreHorspoolPOCL
 class Measurements:
     """ Implement all needed Measurements and illustrate results """
 
-    def __init__(self, text, in_dir, out_dir, pieces_number=1000, start=25, end=200, step=25, device_type=0):
+    def __init__(self, text, in_dir, out_dir, pieces_number=1000, start=25, end=200, step=25, device_type=None):
         # initialize objects of basic algorithms
         self.naive = NaiveSearch(text)
         self.rk = RabinKarp(text)
@@ -98,7 +98,6 @@ class Measurements:
             for i in range(0, len(paterns)):
                 start = time()
                 obj.all_matches(paterns[i])
-                #print(len(obj.all_matches(paterns[i])))
                 end = time()
                 interm_res.append(end-start)
 
@@ -133,12 +132,15 @@ def main():
     genome = read_data("data/processed.txt")
     measurements = Measurements(genome, "data/25-200/", "results/25-200",
                                 pieces_number=10000, start=25, end=200, step=25, device_type=1)
-    measurements.run_all_pocl()
+    # measurements.run_all_pocl()
+    # measurements.naive_pocl_measurements()
+    # measurements.kmp_pocl_measurements()
+    # measurements.bmh_pocl_measurements()
 
     measurements2 = Measurements(genome, "data/250-2000/", "results/250-2000",
                                 pieces_number=4, start=250, end=2000, step=250, device_type=1)
 
-    #measurements2.run_all_pocl()
+    # measurements2.run_all_pocl()
 
 if __name__ == "__main__":
     #cProfile.run('main()')
